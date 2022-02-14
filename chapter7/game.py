@@ -5,6 +5,11 @@ class Game:
         self.players = players
         self.choices = ["Foot", "Nuke", "Cockroach"]
         self.winners = []
+        self.results = {
+            "draw": 0,
+            "player1": 0,
+            "player2": 0
+        }
     
     def getChooseByNumber(self, number):
         return self.choices[number - 1]
@@ -17,12 +22,13 @@ class Game:
         if c < 0:
             return c + b
         else: return c
+    
+    def setWinner(self, winner):
+        self.results[winner] = self.results[winner] + 1
 
     def decideWinner(self):
         player1Choices = self.players[0].getChoices()
         player2Choices = self.players[1].getChoices()
-        # print (f'Player 1 {player1Choices}')
-        # print (f'Player 2 {player2Choices}')
         player1LastChoice = player1Choices[len(player1Choices) - 1]
         player2LastChoice = player2Choices[len(player2Choices) - 1]
         player1ChoiceIndex = self.choices.index(self.getChooseByNumber(player1LastChoice))
@@ -31,14 +37,11 @@ class Game:
         print (f'Player 1 {player1ChoiceIndex}')
         print (f'Player 2 {player2ChoiceIndex}')
         if (player1ChoiceIndex == player2ChoiceIndex):
-            print ("TILE")
-            return 0
+            return self.setWinner('draw')
         if self.mod(player1ChoiceIndex - player2ChoiceIndex, len(self.choices)) < len(self.choices) / 2:
-            print ("USER 1 WON")
-            return 0
+            return self.setWinner('player1')
         else:
-            print ("USER 2 WON")
-            return 0
+            return self.setWinner('player1')
 
 
 class Player:
@@ -76,6 +79,8 @@ def main():
                 myChoice = input("Foot, Nuke or Cockroach? (Quit ends): ")
                 if (myChoice != "q"): #only I can quit the game, computer can't
                     # print (f"You choose: {game.getChooseByNumber(int(myChoice))}")
+                    # my solution would be simpler by entering number
+                    # but that what not what was asked in the assignment
                     print (f"You choose: {myChoice}")
                     choiceNumber = game.getChooseByText(myChoice)
                     player.makeChoice(choiceNumber)
